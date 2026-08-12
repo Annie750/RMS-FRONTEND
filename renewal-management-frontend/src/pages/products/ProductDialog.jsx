@@ -103,8 +103,7 @@ const ProductDialog = ({ open, onClose, onSubmit, initialData, submitting }) => 
                   type="number"
                   label="Validity (months)"
 error={!!errors.validityMonths}
-helperText={errors.validityMonths?.message}                  helperText={errors.validity?.message}
-                />
+helperText={errors.validityMonths?.message}                />
               )}
             />
           </Grid>
