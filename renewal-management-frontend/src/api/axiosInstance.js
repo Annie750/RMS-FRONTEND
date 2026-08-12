@@ -2,34 +2,42 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
+  baseURL:
+    import.meta.env.VITE_API_BASE_URL ||
+    'https://rms-backend-1-2cqx.onrender.com/api',
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 });
 
 // Attach JWT token automatically to every request
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Handle global response errors (expired token, server errors, etc.)
+// Handle global response errors
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
-    const message = error?.response?.data?.message || error?.message || 'Something went wrong';
+    const message =
+      error?.response?.data?.message ||
+      error?.message ||
+      'Something went wrong';
 
     if (status === 401) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('user');
+
       if (!window.location.pathname.includes('/login')) {
         toast.error('Session expired. Please log in again.');
         window.location.href = '/login';
@@ -40,7 +48,11 @@ axiosInstance.interceptors.response.use(
       toast.error('Server error. Please try again later.');
     }
 
-    return Promise.reject({ status, message, raw: error });
+    return Promise.reject({
+      status,
+      message,
+      raw: error,
+    });
   }
 );
 
