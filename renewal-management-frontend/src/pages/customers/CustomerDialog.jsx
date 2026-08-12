@@ -1,0 +1,405 @@
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Grid,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
+
+const schema = yup.object({
+
+  companyName: yup.string().required("Company Name is required"),
+
+  contactPerson: yup.string().required("Contact Person is required"),
+
+  designation: yup.string().required("Designation is required"),
+
+  email: yup
+    .string()
+    .email("Invalid email")
+    .required("Email is required"),
+
+  phone: yup
+    .string()
+    .required("Phone is required"),
+
+  address: yup.string().required("Address is required"),
+
+  city: yup.string().required("City is required"),
+
+  state: yup.string().required("State is required"),
+
+  country: yup.string().required("Country is required"),
+
+  postalCode: yup.string().required("Postal Code is required"),
+
+  status: yup.string().required(),
+
+});
+
+const defaultValues = {
+
+  companyName: "",
+
+  contactPerson: "",
+
+  designation: "",
+
+  accountOwnerId: "",
+
+  email: "",
+
+  phone: "",
+
+  address: "",
+
+  city: "",
+
+  state: "",
+
+  country: "",
+
+  postalCode: "",
+
+  status: "ACTIVE",
+
+};
+
+const CustomerDialog = ({
+  open,
+  onClose,
+  onSubmit,
+  initialData,
+  submitting,
+  users,
+}) => {
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+
+    resolver: yupResolver(schema),
+
+    defaultValues,
+
+  });
+
+  useEffect(() => {
+
+    if (!open) return;
+
+    if (initialData) {
+
+      reset({
+
+        companyName: initialData.companyName || "",
+
+        contactPerson: initialData.contactPerson || "",
+
+        designation: initialData.designation || "",
+
+        accountOwnerId: initialData.accountOwnerId || "",
+
+        email: initialData.email || "",
+
+        phone: initialData.phone || "",
+
+        address: initialData.address || "",
+
+        city: initialData.city || "",
+
+        state: initialData.state || "",
+
+        country: initialData.country || "",
+
+        postalCode: initialData.postalCode || "",
+
+        status: initialData.active ? "ACTIVE" : "INACTIVE",
+
+      });
+
+    } else {
+
+      reset(defaultValues);
+
+    }
+
+  }, [open, initialData, reset]);
+
+  const submitHandler = (values) => {
+
+    onSubmit({
+
+      ...values,
+
+      active: values.status === "ACTIVE",
+
+    });
+
+  };
+  return (
+  <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <DialogTitle sx={{ fontWeight: 700 }}>
+      {initialData ? "Edit Customer" : "Add Customer"}
+    </DialogTitle>
+
+    <DialogContent dividers>
+
+      <Grid container spacing={2} sx={{ mt: 0.2 }}>
+
+        <Grid item xs={12} md={6}>
+          <Controller
+            name="companyName"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Company Name"
+                error={!!errors.companyName}
+                helperText={errors.companyName?.message}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Controller
+            name="contactPerson"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Contact Person"
+                error={!!errors.contactPerson}
+                helperText={errors.contactPerson?.message}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Controller
+            name="designation"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Designation"
+                error={!!errors.designation}
+                helperText={errors.designation?.message}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Controller
+            name="accountOwnerId"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                select
+                fullWidth
+                label="Account Owner"
+              >
+                <MenuItem value="">
+                  Select Account Owner
+                </MenuItem>
+
+                {users?.map((user) => (
+                  <MenuItem
+                    key={user.id}
+                    value={user.id}
+                  >
+                    {user.firstName} {user.lastName}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Email"
+                error={!!errors.email}
+                helperText={errors.email?.message}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Phone"
+                error={!!errors.phone}
+                helperText={errors.phone?.message}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Controller
+            name="address"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                multiline
+                rows={2}
+                label="Address"
+                error={!!errors.address}
+                helperText={errors.address?.message}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Controller
+            name="city"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="City"
+                error={!!errors.city}
+                helperText={errors.city?.message}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Controller
+            name="state"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="State"
+                error={!!errors.state}
+                helperText={errors.state?.message}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Controller
+            name="country"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Country"
+                error={!!errors.country}
+                helperText={errors.country?.message}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Controller
+            name="postalCode"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Postal Code"
+                error={!!errors.postalCode}
+                helperText={errors.postalCode?.message}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Controller
+            name="status"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                select
+                fullWidth
+                label="Status"
+              >
+                <MenuItem value="ACTIVE">Active</MenuItem>
+                <MenuItem value="INACTIVE">Inactive</MenuItem>
+              </TextField>
+            )}
+          />
+        </Grid>
+
+      </Grid>
+
+    </DialogContent>
+
+    <DialogActions sx={{ px: 3, py: 2 }}>
+      <Button
+        onClick={onClose}
+        disabled={submitting}
+      >
+        Cancel
+      </Button>
+
+      <Button
+        variant="contained"
+        onClick={handleSubmit(submitHandler)}
+        disabled={submitting}
+      >
+        {submitting ? (
+          <CircularProgress
+            size={20}
+            color="inherit"
+          />
+        ) : initialData ? (
+          "Update"
+        ) : (
+          "Create"
+        )}
+      </Button>
+    </DialogActions>
+
+  </Dialog>
+);
+
+};
+
+export default CustomerDialog;
