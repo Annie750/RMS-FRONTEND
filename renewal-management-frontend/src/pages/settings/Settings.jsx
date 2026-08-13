@@ -72,81 +72,67 @@ const Settings = () => {
   /*
    * SAVE PROFILE
    */
-  const handleProfileSave = async () => {
+ const handleProfileSave = async () => {
+  const trimmedName = name.trim();
 
-    const trimmedName = name.trim();
+  if (!trimmedName) {
+    toast.error('Please enter your full name');
+    return;
+  }
 
-    if (!trimmedName) {
-      toast.error('Full name is required');
-      return;
-    }
+  const nameParts = trimmedName.split(/\s+/);
 
-    const nameParts = trimmedName.split(/\s+/);
+  // Require both first name and last name
+  if (nameParts.length < 2) {
+    toast.error('Please enter both first name and last name');
+    return;
+  }
 
-    const firstName = nameParts[0];
+  const firstName = nameParts[0];
+  const lastName = nameParts.slice(1).join(' ');
 
-    const lastName =
-      nameParts.slice(1).join(' ') || nameParts[0];
+  if (!firstName || !lastName) {
+    toast.error('Please enter both first name and last name');
+    return;
+  }
 
-    setSavingProfile(true);
+  setSavingProfile(true);
 
-    try {
+  try {
+    const updatedUser = await userService.updateMyProfile({
+      firstName,
+      lastName
+    });
 
-      /*
-       * Call backend:
-       *
-       * PUT /api/users/me/profile
-       */
-      const updatedUser =
-        await userService.updateMyProfile({
-          firstName,
-          lastName
-        });
+    updateUser({
+      ...user,
+      ...updatedUser,
+      firstName: updatedUser?.firstName || firstName,
+      lastName: updatedUser?.lastName || lastName
+    });
 
-      /*
-       * Update React state + localStorage.
-       */
-      updateUser({
-        ...user,
-        ...updatedUser,
-        firstName:
-          updatedUser?.firstName || firstName,
-        lastName:
-          updatedUser?.lastName || lastName,
-      });
+    setName(
+      [
+        updatedUser?.firstName || firstName,
+        updatedUser?.lastName || lastName
+      ].join(' ')
+    );
 
-      /*
-       * Make sure the input also reflects
-       * the saved name.
-       */
-      setName(
-        [
-          updatedUser?.firstName || firstName,
-          updatedUser?.lastName || lastName
-        ]
-          .filter(Boolean)
-          .join(' ')
-      );
+    toast.success('Profile updated successfully');
 
-      toast.success('Profile updated successfully');
+  } catch (err) {
+    const message =
+      err?.response?.data?.message ||
+      err?.response?.data?.error ||
+      err?.message ||
+      'Failed to update profile';
 
-    } catch (err) {
+    toast.error(message);
 
-      const message =
-        err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        err?.message ||
-        'Failed to update profile';
-
-      toast.error(message);
-
-    } finally {
-
-      setSavingProfile(false);
-
-    }
-  };
-
+  } finally {
+    setSavingProfile(false);
+  }
+};
   /*
    * CHANGE PASSWORD
    */
