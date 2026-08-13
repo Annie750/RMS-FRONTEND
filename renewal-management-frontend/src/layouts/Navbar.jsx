@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -31,15 +31,9 @@ const Navbar = ({ onMenuClick }) => {
   const { mode, toggleMode } = useThemeMode();
   const navigate = useNavigate();
 
-  const [anchorEl, setAnchorEl] = useState(null);
+ const [anchorEl, setAnchorEl] = useState(null);
 const [notifAnchorEl, setNotifAnchorEl] = useState(null);
 const [notifications, setNotifications] = useState([]);
-
-  const handleLogout = () => {
-    setAnchorEl(null);
-    logout();
-    navigate('/login');
-  }
 
 useEffect(() => {
   const loadNotifications = async () => {
@@ -56,14 +50,19 @@ useEffect(() => {
 }, []);
 
 const handleLogout = () => {
-  const initials = user?.name
-    ? user.name
-        .split(' ')
-        .map((n) => n[0])
-        .slice(0, 2)
-        .join('')
-        .toUpperCase()
-    : 'U';
+  setAnchorEl(null);
+  logout();
+  navigate('/login');
+};
+
+const initials = user?.name
+  ? user.name
+      .split(' ')
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase()
+  : 'U';
 
   return (
     <AppBar
