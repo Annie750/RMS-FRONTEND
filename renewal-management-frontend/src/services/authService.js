@@ -1,12 +1,28 @@
 import axiosInstance from "../api/axiosInstance";
 
 const login = async (email, password) => {
-  const response = await axiosInstance.post("/auth/login", { email, password });
-  // Expected backend shape: { token: "...", user: { id, name, email, role } }
-  // Adjust the destructuring below if your backend returns a different shape.
+  const response = await axiosInstance.post("/auth/login", {
+    email,
+    password,
+  });
+
   const { token, user } = response.data;
+
   return { token, user };
 };
 
-const authService = { login };
+const changePassword = async (currentPassword, newPassword) => {
+  const response = await axiosInstance.post("/auth/change-password", {
+    currentPassword,
+    newPassword,
+  });
+
+  return response.data;
+};
+
+const authService = {
+  login,
+  changePassword,
+};
+
 export default authService;
