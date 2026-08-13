@@ -1,4 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect
+} from "react";
 import { jwtDecode } from "jwt-decode";
 import authService from "../services/authService";
 
@@ -60,22 +65,46 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
 
-    const data = await authService.login(email, password);
+    const data = await authService.login(
+      email,
+      password
+    );
 
-    localStorage.setItem("accessToken", data.token);
+    localStorage.setItem(
+      "accessToken",
+      data.token
+    );
 
-    // Support both backend response formats
+    /*
+     * Store the user returned by the backend.
+     */
     const userData = data.user ?? {
       email: data.email,
       role: data.role,
     };
 
-    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem(
+      "user",
+      JSON.stringify(userData)
+    );
 
     setUser(userData);
 
     return data;
+  };
 
+  /*
+   * Update the currently logged-in user
+   * in both React state and localStorage.
+   */
+  const updateUser = (updatedUser) => {
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(updatedUser)
+    );
+
+    setUser(updatedUser);
   };
 
   const logout = () => {
@@ -89,9 +118,12 @@ export const AuthProvider = ({ children }) => {
 
   const isAuthenticated = () => {
 
-    const token = localStorage.getItem("accessToken");
+    const token =
+      localStorage.getItem("accessToken");
 
-    if (!token) return false;
+    if (!token) {
+      return false;
+    }
 
     try {
 
@@ -113,6 +145,7 @@ export const AuthProvider = ({ children }) => {
         user,
         login,
         logout,
+        updateUser,
         isAuthenticated,
         loading,
       }}
