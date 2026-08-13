@@ -55,8 +55,12 @@ const handleLogout = () => {
   navigate('/login');
 };
 
-const initials = user?.name
-  ? user.name
+const fullName = [user?.firstName, user?.lastName]
+  .filter(Boolean)
+  .join(' ');
+
+const initials = fullName
+  ? fullName
       .split(' ')
       .map((n) => n[0])
       .slice(0, 2)
@@ -157,7 +161,7 @@ const initials = user?.name
         >
           <Box sx={{ px: 2, py: 1 }}>
             <Typography variant="subtitle2" noWrap>
-              {user?.name || 'User'}
+              {fullName || 'User'}
             </Typography>
             <Typography variant="caption" color="text.secondary" noWrap>
               {user?.email || ''}
