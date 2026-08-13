@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useThemeMode } from '../theme/ThemeModeContext';
 import { DRAWER_WIDTH } from '../utils/constants';
+import dashboardService from '../services/dashboardService';
 
 const Navbar = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
@@ -31,14 +32,30 @@ const Navbar = ({ onMenuClick }) => {
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [notifAnchorEl, setNotifAnchorEl] = useState(null);
+const [notifAnchorEl, setNotifAnchorEl] = useState(null);
+const [notifications, setNotifications] = useState([]);
 
   const handleLogout = () => {
     setAnchorEl(null);
     logout();
     navigate('/login');
+  }
+
+useEffect(() => {
+  const loadNotifications = async () => {
+    try {
+      const upcoming = await dashboardService.getUpcomingRenewals();
+      setNotifications(upcoming || []);
+    } catch (error) {
+      console.error('Failed to load notifications:', error);
+      setNotifications([]);
+    }
   };
 
+  loadNotifications();
+}, []);
+
+const handleLogout = () => {
   const initials = user?.name
     ? user.name
         .split(' ')
@@ -81,7 +98,11 @@ const Navbar = ({ onMenuClick }) => {
 
         <Tooltip title="Notifications">
           <IconButton color="inherit" onClick={(e) => setNotifAnchorEl(e.currentTarget)}>
-            <Badge badgeContent={3} color="error">
+            <Badge
+  badgeContent={notifications.length}
+  color="error"
+  invisible={notifications.length === 0}
+>
               <NotificationsNoneOutlinedIcon />
             </Badge>
           </IconButton>
@@ -96,14 +117,30 @@ const Navbar = ({ onMenuClick }) => {
             <Typography variant="subtitle2">Notifications</Typography>
           </Box>
           <Divider />
-          <MenuItem onClick={() => setNotifAnchorEl(null)}>
-            <Box>
-              <Typography variant="body2">3 renewals are expiring this week</Typography>
-              <Typography variant="caption" color="text.secondary">
-                2 hours ago
-              </Typography>
-            </Box>
-          </MenuItem>
+         {notifications.length === 0 ? (
+  <MenuItem disabled>
+    <Typography variant="body2" color="text.secondary">
+      No upcoming renewals
+    </Typography>
+  </MenuItem>
+) : (
+  notifications.map((notification) => (
+    <MenuItem
+      key={`${notification.customer}-${notification.product}-${notification.expiryDate}`}
+      onClick={() => setNotifAnchorEl(null)}
+    >
+      <Box>
+        <Typography variant="body2">
+          {notification.customer} — {notification.product}
+        </Typography>
+
+        <Typography variant="caption" color="text.secondary">
+          Expires {notification.expiryDate} • {notification.daysLeft} days left
+        </Typography>
+      </Box>
+    </MenuItem>
+  ))
+)}
         </Menu>
 
         <Tooltip title="Account">
