@@ -895,15 +895,6 @@ const RenewalDialog = ({
                                   ]?.sellingPrice
                               }
 
-                              helperText={
-                                errors
-                                  .lineItems?.[
-                                    index
-                                  ]?.sellingPrice
-                                  ?.message ||
-                                "Automatically fetched from product"
-                              }
-
                             />
 
                           )}
