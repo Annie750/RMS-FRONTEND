@@ -399,81 +399,49 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   /*
    * Submit new password
    */
+const handleResetConfirm = async () => {
+  if (!resetTarget) return;
 
-  const handleResetConfirm = async () => {
+  if (newPassword.length < 6) {
+    toast.error('Password must be at least 6 characters.');
+    return;
+  }
 
-    if (!resetTarget) {
-      return;
-    }
+  if (newPassword !== confirmPassword) {
+    toast.error('Passwords do not match.');
+    return;
+  }
 
-    /*
-     * Validate password
-     */
-    if (!newPassword.trim()) {
+  setResetting(true);
 
-      toast.error(
-        'New password is required'
-      );
+  try {
+    await userService.resetPassword(
+      resetTarget.id,
+      {
+        newPassword: newPassword
+      }
+    );
 
-      return;
-    }
+    toast.success('Password updated successfully.');
 
-    if (newPassword.length < 6) {
+    setResetOpen(false);
+    setResetTarget(null);
+    setNewPassword('');
+    setConfirmPassword('');
+  } catch (err) {
 
-      toast.error(
-        'Password must be at least 6 characters'
-      );
+    const message =
+      err?.response?.data?.message ||
+      err?.response?.data ||
+      err?.message ||
+      'Failed to update password';
 
-      return;
-    }
+    toast.error(message);
 
-    if (newPassword !== confirmPassword) {
-
-      toast.error(
-        'Passwords do not match'
-      );
-
-      return;
-    }
-
-    setResetting(true);
-
-    try {
-
-      await userService.resetPassword(
-        resetTarget.id,
-        {
-          newPassword: newPassword
-        }
-      );
-
-      toast.success(
-        'Password updated successfully'
-      );
-
-      setResetOpen(false);
-
-      setResetTarget(null);
-
-      setNewPassword('');
-
-      setConfirmPassword('');
-
-    } catch (err) {
-
-      toast.error(
-        err?.response?.data?.message ||
-        err?.message ||
-        'Failed to update password'
-      );
-
-    } finally {
-
-      setResetting(false);
-
-    }
-
-  };
+  } finally {
+    setResetting(false);
+  }
+};
 
 
   /*
