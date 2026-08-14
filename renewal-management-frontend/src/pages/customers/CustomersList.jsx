@@ -42,11 +42,19 @@ const [users, setUsers] = useState([]);
 useEffect(() => {
   const loadUsers = async () => {
     try {
-      const data = await userService.getAll();
+      const data = await userService.getAccountOwners();
 
-      setUsers(Array.isArray(data) ? data : data.content || []);
+      setUsers(
+        Array.isArray(data)
+          ? data
+          : data?.content || []
+      );
     } catch (e) {
-      console.error(e);
+      console.error("Failed to load account owners:", e);
+      toast.error(
+        e?.response?.data?.message ||
+        "Failed to load account owners"
+      );
     }
   };
 
