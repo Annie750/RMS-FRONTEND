@@ -11,8 +11,15 @@ import {
   FormControlLabel,
   Avatar,
   Stack,
-  CircularProgress
+  CircularProgress,
+  IconButton,
+  InputAdornment
 } from '@mui/material';
+
+import {
+  Visibility,
+  VisibilityOff
+} from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
 import PageHeader from '../../components/common/PageHeader';
@@ -55,6 +62,14 @@ const Settings = () => {
 
   const [savingPassword, setSavingPassword] =
     useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] =
+  useState(false);
+
+const [showNewPassword, setShowNewPassword] =
+  useState(false);
+
+const [showConfirmPassword, setShowConfirmPassword] =
+  useState(false);
 
   /*
    * Generate avatar initials.
@@ -333,40 +348,107 @@ const Settings = () => {
               </Typography>
 
               <TextField
-                fullWidth
-                type="password"
-                label="Current Password"
-                value={currentPassword}
-                onChange={(e) =>
-                  setCurrentPassword(e.target.value)
-                }
-                margin="normal"
-                autoComplete="current-password"
-              />
+  fullWidth
+  type={showCurrentPassword ? 'text' : 'password'}
+  label="Current Password"
+  value={currentPassword}
+  onChange={(e) =>
+    setCurrentPassword(e.target.value)
+  }
+  margin="normal"
+  autoComplete="current-password"
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          onClick={() =>
+            setShowCurrentPassword(
+              !showCurrentPassword
+            )
+          }
+          edge="end"
+          aria-label="show current password"
+        >
+          {showCurrentPassword ? (
+            <VisibilityOff />
+          ) : (
+            <Visibility />
+          )}
+        </IconButton>
+      </InputAdornment>
+    )
+  }}
+/>
 
               <TextField
-                fullWidth
-                type="password"
-                label="New Password"
-                value={newPassword}
-                onChange={(e) =>
-                  setNewPassword(e.target.value)
-                }
-                margin="normal"
-                autoComplete="new-password"
-              />
+  fullWidth
+  type={showNewPassword ? 'text' : 'password'}
+  label="New Password"
+  value={newPassword}
+  onChange={(e) =>
+    setNewPassword(e.target.value)
+  }
+  margin="normal"
+  autoComplete="new-password"
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          onClick={() =>
+            setShowNewPassword(
+              !showNewPassword
+            )
+          }
+          edge="end"
+          aria-label="show new password"
+        >
+          {showNewPassword ? (
+            <VisibilityOff />
+          ) : (
+            <Visibility />
+          )}
+        </IconButton>
+      </InputAdornment>
+    )
+  }}
+/>
 
-              <TextField
-                fullWidth
-                type="password"
-                label="Confirm New Password"
-                value={confirmPassword}
-                onChange={(e) =>
-                  setConfirmPassword(e.target.value)
-                }
-                margin="normal"
-                autoComplete="new-password"
-              />
+             <TextField
+  fullWidth
+  type={
+    showConfirmPassword
+      ? 'text'
+      : 'password'
+  }
+  label="Confirm New Password"
+  value={confirmPassword}
+  onChange={(e) =>
+    setConfirmPassword(e.target.value)
+  }
+  margin="normal"
+  autoComplete="new-password"
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          onClick={() =>
+            setShowConfirmPassword(
+              !showConfirmPassword
+            )
+          }
+          edge="end"
+          aria-label="show confirm password"
+        >
+          {showConfirmPassword ? (
+            <VisibilityOff />
+          ) : (
+            <Visibility />
+          )}
+        </IconButton>
+      </InputAdornment>
+    )
+  }}
+/>
 
               <Button
                 variant="contained"
