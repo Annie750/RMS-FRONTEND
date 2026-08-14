@@ -28,6 +28,17 @@ const toggleActive = (id) =>
     .then((r) => r.data);
 
 /*
+ * Get active users for Customer Account Owner selection.
+ *
+ * Backend:
+ * GET /api/users/account-owners
+ */
+const getAccountOwners = () =>
+  axiosInstance
+    .get(`${BASE}/account-owners`)
+    .then((r) => r.data);
+
+/*
  * Update the currently logged-in user's profile.
  *
  * Backend:
@@ -46,12 +57,8 @@ const userService = {
   remove,
   resetPassword,
   toggleActive,
-  updateMyProfile,
   getAccountOwners,
+  updateMyProfile,
 };
-const getAccountOwners = () =>
-  axiosInstance
-    .get(`${BASE}/account-owners`)
-    .then((r) => r.data);
 
 export default userService;
