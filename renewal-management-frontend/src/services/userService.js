@@ -47,6 +47,11 @@ const userService = {
   resetPassword,
   toggleActive,
   updateMyProfile,
+  getAccountOwners,
 };
+const getAccountOwners = () =>
+  axiosInstance
+    .get(`${BASE}/account-owners`)
+    .then((r) => r.data);
 
 export default userService;
