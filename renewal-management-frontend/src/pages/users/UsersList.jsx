@@ -18,9 +18,13 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  CircularProgress
+  CircularProgress,
+  InputAdornment
 } from '@mui/material';
-
+import {
+  Visibility,
+  VisibilityOff
+} from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -82,6 +86,8 @@ const UsersList = () => {
   const [newPassword, setNewPassword] = useState('');
 
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   /*
    * Pagination
@@ -858,61 +864,82 @@ const UsersList = () => {
           >
 
             <TextField
-
-              fullWidth
-
-              label="New Password"
-
-              type="password"
-
-              value={newPassword}
-
-              onChange={(e) =>
-                setNewPassword(e.target.value)
-              }
-
-              disabled={resetting}
-
-              autoFocus
-
-              margin="normal"
-
-              helperText="Password must be at least 6 characters"
-
-            />
-
+  fullWidth
+  label="New Password"
+  type={showNewPassword ? 'text' : 'password'}
+  value={newPassword}
+  onChange={(e) => setNewPassword(e.target.value)}
+  disabled={resetting}
+  autoFocus
+  margin="normal"
+  helperText="Password must be at least 6 characters"
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          onClick={() =>
+            setShowNewPassword(!showNewPassword)
+          }
+          edge="end"
+          disabled={resetting}
+        >
+          {showNewPassword ? (
+            <VisibilityOff />
+          ) : (
+            <Visibility />
+          )}
+        </IconButton>
+      </InputAdornment>
+    )
+  }}
+/>
 
             <TextField
-
-              fullWidth
-
-              label="Confirm Password"
-
-              type="password"
-
-              value={confirmPassword}
-
-              onChange={(e) =>
-                setConfirmPassword(e.target.value)
-              }
-
-              disabled={resetting}
-
-              margin="normal"
-
-              error={
-                confirmPassword.length > 0 &&
-                newPassword !== confirmPassword
-              }
-
-              helperText={
-                confirmPassword.length > 0 &&
-                newPassword !== confirmPassword
-                  ? 'Passwords do not match'
-                  : ''
-              }
-
-            />
+  fullWidth
+  label="Confirm Password"
+  type={
+    showConfirmPassword
+      ? 'text'
+      : 'password'
+  }
+  value={confirmPassword}
+  onChange={(e) =>
+    setConfirmPassword(e.target.value)
+  }
+  disabled={resetting}
+  margin="normal"
+  error={
+    confirmPassword.length > 0 &&
+    newPassword !== confirmPassword
+  }
+  helperText={
+    confirmPassword.length > 0 &&
+    newPassword !== confirmPassword
+      ? 'Passwords do not match'
+      : ''
+  }
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          onClick={() =>
+            setShowConfirmPassword(
+              !showConfirmPassword
+            )
+          }
+          edge="end"
+          disabled={resetting}
+        >
+          {showConfirmPassword ? (
+            <VisibilityOff />
+          ) : (
+            <Visibility />
+          )}
+        </IconButton>
+      </InputAdornment>
+    )
+  }}
+/>
 
           </Box>
 
