@@ -43,10 +43,10 @@ import UserDialog from './UserDialog';
 import userService from '../../services/userService';
 import { isAdmin } from '../../utils/auth';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/AuthContext';
 
 const UsersList = () => {
-
+const { user, updateUser } = useAuth();
   /*
    * ---------------------------------------------------------
    * State
@@ -278,25 +278,19 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     values
   );
 
-  // If the edited user is the currently logged-in user,
-  // update AuthContext and localStorage too.
   if (user?.id === editingUser.id) {
     updateUser(updatedUser);
   }
 
-  toast.success(
-    'User updated successfully'
-  );
+  toast.success('User updated successfully');
 
 } else {
 
-        await userService.create(values);
+  await userService.create(values);
 
-        toast.success(
-          'User created successfully'
-        );
+  toast.success('User created successfully');
 
-      }
+}
 
       setDialogOpen(false);
 
