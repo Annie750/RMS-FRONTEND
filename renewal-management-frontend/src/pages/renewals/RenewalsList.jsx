@@ -126,12 +126,20 @@ const RenewalsList = () => {
   )
 },
     {
-      field: 'status',
-      headerName: 'Status',
-      flex: 0.9,
-      minWidth: 140,
-      renderCell: (params) => <StatusChip status={params.value} />
-    },
+  field: 'status',
+  headerName: 'Status',
+  flex: 0.9,
+  minWidth: 140,
+  renderCell: (params) => (
+    <StatusChip
+      status={
+        params.row.active
+          ? params.row.status
+          : 'INACTIVE'
+      }
+    />
+  )
+},
     { field: 'assignedUserName', headerName: 'Assigned User', flex: 0.9, minWidth: 140 },
     {
   field: 'actions',
