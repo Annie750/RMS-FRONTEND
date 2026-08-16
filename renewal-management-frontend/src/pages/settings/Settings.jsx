@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Box,
   Grid,
@@ -45,6 +45,16 @@ const Settings = () => {
   const [name, setName] = useState(
     currentFullName || user?.name || ''
   );
+  useEffect(() => {
+  const fullName = [
+    user?.firstName,
+    user?.lastName
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  setName(fullName || user?.name || '');
+}, [user?.firstName, user?.lastName, user?.name]);
 
   const [email] = useState(user?.email || '');
 
