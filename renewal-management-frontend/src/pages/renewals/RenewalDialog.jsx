@@ -53,7 +53,7 @@ const schema = yup.object({
     .date()
     .nullable()
     .required("Purchase date is required"),
-
+active: yup.boolean(),
   notes: yup.string(),
 
   lineItems: yup
@@ -88,6 +88,7 @@ const defaultValues = {
   customerId: "",
   assignedUserId: "",
   purchaseDate: null,
+  active: true,
   notes: "",
   lineItems: [
     {
@@ -188,26 +189,28 @@ const RenewalDialog = ({
          */
         if (initialData) {
           reset({
-            customerId: initialData.customerId,
-            assignedUserId: initialData.assignedUserId,
+  customerId: initialData.customerId,
+  assignedUserId: initialData.assignedUserId,
 
-            purchaseDate: initialData.purchaseDate
-              ? dayjs(initialData.purchaseDate)
-              : null,
+  purchaseDate: initialData.purchaseDate
+    ? dayjs(initialData.purchaseDate)
+    : null,
 
-            notes: initialData.notes || "",
+  active: initialData.active ?? true,
 
-            lineItems: initialData.lineItems?.length
-              ? initialData.lineItems
-              : [
-                  {
-                    productId: "",
-                    quantity: 1,
-                    transferPrice: "",
-                    sellingPrice: "",
-                  },
-                ],
-          });
+  notes: initialData.notes || "",
+
+  lineItems: initialData.lineItems?.length
+    ? initialData.lineItems
+    : [
+        {
+          productId: "",
+          quantity: 1,
+          transferPrice: "",
+          sellingPrice: "",
+        },
+      ],
+});
         } else {
           reset(defaultValues);
         }
@@ -671,6 +674,36 @@ const RenewalDialog = ({
               />
 
             </Grid>
+            {/* Status */}
+
+<Grid item xs={12} md={6}>
+
+  <Controller
+    name="active"
+    control={control}
+    render={({ field }) => (
+      <TextField
+        {...field}
+        select
+        label="Status"
+        fullWidth
+        value={field.value ? "ACTIVE" : "INACTIVE"}
+        onChange={(e) =>
+          field.onChange(e.target.value === "ACTIVE")
+        }
+      >
+        <MenuItem value="ACTIVE">
+          Active
+        </MenuItem>
+
+        <MenuItem value="INACTIVE">
+          Inactive
+        </MenuItem>
+      </TextField>
+    )}
+  />
+
+</Grid>
 
             <Grid item xs={12}>
               <Divider>
