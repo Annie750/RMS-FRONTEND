@@ -15,6 +15,7 @@ import RenewalDialog from './RenewalDialog';
 import renewalService from '../../services/renewalService';
 import { exportToCSV } from '../../utils/exportCSV';
 import { isAdmin } from '../../utils/auth';
+
 const RenewalsList = () => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,31 +51,30 @@ const RenewalsList = () => {
     return rows.filter(
       (r) =>
         r.customerName?.toLowerCase().includes(q) ||
-        r.productName?.toLowerCase().includes(q) ||
         r.assignedUserName?.toLowerCase().includes(q)
     );
   }, [rows, search]);
 
   const handleAdd = () => {
-  if (!isAdmin()) return;
+    if (!isAdmin()) return;
 
-  setEditingRenewal(null);
-  setDialogOpen(true);
-};
+    setEditingRenewal(null);
+    setDialogOpen(true);
+  };
 
   const handleEdit = (row) => {
-  if (!isAdmin()) return;
+    if (!isAdmin()) return;
 
-  setEditingRenewal(row);
-  setDialogOpen(true);
-};
+    setEditingRenewal(row);
+    setDialogOpen(true);
+  };
 
   const handleDeleteClick = (row) => {
-  if (!isAdmin()) return;
+    if (!isAdmin()) return;
 
-  setDeleteTarget(row);
-  setConfirmOpen(true);
-};
+    setDeleteTarget(row);
+    setConfirmOpen(true);
+  };
 
   const handleDeleteConfirm = async () => {
     if (!deleteTarget) return;
@@ -113,66 +113,65 @@ const RenewalsList = () => {
 
   const columns = [
     { field: 'customerName', headerName: 'Customer', flex: 1.1, minWidth: 160 },
-    { field: 'productName', headerName: 'Product', flex: 1, minWidth: 140 },
     { field: 'purchaseDate', headerName: 'Purchase Date', flex: 0.9, minWidth: 130 },
     { field: 'expiryDate', headerName: 'Expiry Date', flex: 0.9, minWidth: 130 },
     {
-  field: "renewalAmount",
-  headerName: "Amount",
-  flex: 0.8,
-  minWidth: 110,
-  renderCell: (params) => (
-    <>₹{Number(params.row.renewalAmount ?? 0).toLocaleString()}</>
-  )
-},
+      field: 'renewalAmount',
+      headerName: 'Amount',
+      flex: 0.8,
+      minWidth: 110,
+      renderCell: (params) => (
+        <>₹{Number(params.row.renewalAmount ?? 0).toLocaleString()}</>
+      )
+    },
     {
-  field: 'status',
-  headerName: 'Status',
-  flex: 0.9,
-  minWidth: 140,
-  renderCell: (params) => (
-    <StatusChip
-      status={
-        params.row.active
-          ? params.row.status
-          : 'INACTIVE'
-      }
-    />
-  )
-},
+      field: 'status',
+      headerName: 'Status',
+      flex: 0.9,
+      minWidth: 140,
+      renderCell: (params) => (
+        <StatusChip
+          status={
+            params.row.active
+              ? params.row.status
+              : 'INACTIVE'
+          }
+        />
+      )
+    },
     { field: 'assignedUserName', headerName: 'Assigned User', flex: 0.9, minWidth: 140 },
     {
-  field: 'actions',
-  headerName: 'Actions',
-  sortable: false,
-  filterable: false,
-  width: 120,
-  renderCell: (params) =>
-    isAdmin() ? (
-      <Stack direction="row" spacing={0.5}>
-        <Tooltip title="Edit">
-          <IconButton
-            size="small"
-            onClick={() => handleEdit(params.row)}
-          >
-            <EditOutlinedIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
+      field: 'actions',
+      headerName: 'Actions',
+      sortable: false,
+      filterable: false,
+      width: 120,
+      renderCell: (params) =>
+        isAdmin() ? (
+          <Stack direction="row" spacing={0.5}>
+            <Tooltip title="Edit">
+              <IconButton
+                size="small"
+                onClick={() => handleEdit(params.row)}
+              >
+                <EditOutlinedIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
 
-        <Tooltip title="Delete">
-          <IconButton
-            size="small"
-            onClick={() => handleDeleteClick(params.row)}
-          >
-            <DeleteOutlineOutlinedIcon
-              fontSize="small"
-              color="error"
-            />
-          </IconButton>
-        </Tooltip>
-      </Stack>
-    ) : null
-}
+            <Tooltip title="Delete">
+              <IconButton
+                size="small"
+                onClick={() => handleDeleteClick(params.row)}
+              >
+                <DeleteOutlineOutlinedIcon
+                  fontSize="small"
+                  color="error"
+                />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        ) : null
+    }
   ];
 
   return (
@@ -182,16 +181,16 @@ const RenewalsList = () => {
         subtitle="Track and manage all customer renewals"
         breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Renewals' }]}
         action={
-  isAdmin() && (
-    <Button
-      variant="contained"
-      startIcon={<AddOutlinedIcon />}
-      onClick={handleAdd}
-    >
-      Create Renewal
-    </Button>
-  )
-}
+          isAdmin() && (
+            <Button
+              variant="contained"
+              startIcon={<AddOutlinedIcon />}
+              onClick={handleAdd}
+            >
+              Create Renewal
+            </Button>
+          )
+        }
       />
 
       <Box
