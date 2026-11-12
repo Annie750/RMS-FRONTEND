@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 const axiosInstance = axios.create({
   baseURL:
     import.meta.env.VITE_API_BASE_URL ||
-    'https://rms-backend-1-2cqx.onrender.com/api',
+    'https://rms-backend-ayxy.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
